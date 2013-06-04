@@ -377,7 +377,7 @@ rdpSettings* freerdp_settings_new(void* instance)
 
 		settings->VirtualChannelChunkSize = CHANNEL_CHUNK_LENGTH;
 
-		settings->MultifragMaxRequestSize = 0xFFFF;
+		settings->MultifragMaxRequestSize = 0xFFFFFF;
 
 		settings->GatewayUseSameCredentials = TRUE;
 

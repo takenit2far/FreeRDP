@@ -79,6 +79,8 @@ struct rdp_freerdp_peer
 	BOOL activated;
 	BOOL authenticated;
 	SEC_WINNT_AUTH_IDENTITY identity;
+
+	void *userData;
 };
 
 #ifdef __cplusplus

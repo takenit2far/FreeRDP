@@ -36,6 +36,11 @@
 #include <freerdp/constants.h>
 #include <freerdp/server/rdpsnd.h>
 
+#include <unistd.h>
+#include <libfreerdp/core/activation.h>
+#include <libfreerdp/core/mcs.h>
+#include <libfreerdp/core/peer.h>
+
 #include "sf_audin.h"
 #include "sf_rdpsnd.h"
 
@@ -518,11 +523,14 @@ BOOL tf_peer_activate(freerdp_peer* client)
 
 	rfx_context_reset(context->rfx_context);
 	context->activated = TRUE;
+	rdpRdp *rdp = (rdpRdp *)client->context->rdp;
+
 
 	if (test_pcap_file != NULL)
 	{
 		client->update->dump_rfx = TRUE;
 		tf_peer_dump_rfx(client);
+		client->userData = NULL;
 	}
 	else
 	{
@@ -672,7 +680,7 @@ static void* test_peer_mainloop(void* arg)
 
 	printf("We've got a client %s\n", client->local ? "(local)" : client->hostname);
 
-	while (1)
+	while (client->userData != NULL)
 	{
 		rcount = 0;
 
@@ -731,6 +739,8 @@ static void* test_peer_mainloop(void* arg)
 static void test_peer_accepted(freerdp_listener* instance, freerdp_peer* client)
 {
 	pthread_t th;
+
+	client->userData = (void *)1;
 
 	pthread_create(&th, 0, test_peer_mainloop, client);
 	pthread_detach(th);
