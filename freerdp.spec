@@ -147,7 +147,8 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 %files libs
 %defattr(-,root,root,-)
 %doc LICENSE README ChangeLog
-%{_libdir}/lib%{name}-*.so.*
+%{_libdir}/libfreerdp*.so.*
+%{_libdir}/libwinpr*.so.*
 %dir %{_libdir}/%{name}/
 
 %files plugins-standard
@@ -156,9 +157,8 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 %files devel
 %defattr(-,root,root,-)
-%{_includedir}/%{name}/
-%{_libdir}/lib%{name}-*.so
+%{_includedir}/freerdp/
+%{_includedir}/winpr/
 %{_libdir}/pkgconfig/%{name}.pc
-
 
 %changelog
