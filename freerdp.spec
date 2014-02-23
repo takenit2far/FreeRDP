@@ -97,7 +97,6 @@ cmake \
         -DWITH_CUPS:BOOL=ON \
         -DWITH_PCSC:BOOL=ON \
         -DWITH_PULSE:BOOL=ON \
-		-DWITH_MACAUDIO:BOOL=ON \
         -DWITH_X11:BOOL=ON \
         -DWITH_XCURSOR:BOOL=ON \
         -DWITH_XEXT:BOOL=ON \
