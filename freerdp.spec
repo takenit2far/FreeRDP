@@ -141,16 +141,15 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 %defattr(-,root,root,-)
 %{_bindir}/xfreerdp
 %{_mandir}/man1/xfreerdp.*
+%{_libdir}/libxfreerdp-client.so*
 %{_datadir}/applications/xfreerdp.desktop
 %{_datadir}/icons/hicolor/256x256/apps/%{name}.png
 
 %files libs
 %defattr(-,root,root,-)
 %doc LICENSE README ChangeLog
-%{_libdir}/libfreerdp*.so
-%{_libdir}/libfreerdp*.so.*
-%{_libdir}/libwinpr*.so.*
-%{_libdir}/libwinpr*.so
+%{_libdir}/libfreerdp*.so*
+%{_libdir}/libwinpr*.so*
 %dir %{_libdir}/%{name}/
 
 %files plugins-standard
@@ -162,5 +161,7 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 %{_includedir}/freerdp/
 %{_includedir}/winpr/
 %{_libdir}/pkgconfig/%{name}.pc
+%{_libdir}/cmake/FreeRDP/*
+%{_libdir}/cmake/WinPR/*
 
 %changelog
