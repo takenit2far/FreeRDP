@@ -1,8 +1,8 @@
 # rpmbuild -ta freerdp-<...>.tar.gz
 
 Name:           freerdp
-Version:        1.0.1
-Release:        1%{?dist}
+Version:        1.2.0
+Release:        dev
 Summary:        Remote Desktop Protocol functionality
 
 Group:          Applications/Communications
