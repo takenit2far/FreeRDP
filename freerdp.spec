@@ -2,7 +2,8 @@
 
 Name:           freerdp
 Version:        1.2.0
-Release:        dev
+Release:        dev%{?dist}
+
 Summary:        Remote Desktop Protocol functionality
 
 Group:          Applications/Communications
