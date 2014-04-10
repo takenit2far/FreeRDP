@@ -23,7 +23,7 @@
 
 #include "bulk.h"
 
-//#define WITH_BULK_DEBUG		1
+#define WITH_BULK_DEBUG		1
 
 UINT32 bulk_compression_level(rdpBulk* bulk)
 {
@@ -96,7 +96,7 @@ int bulk_decompress(rdpBulk* bulk, BYTE* pSrcData, UINT32 SrcSize, BYTE** ppDstD
 			CompressionRatio = ((double) CompressedBytes) / ((double) UncompressedBytes);
 			TotalCompressionRatio = ((double) bulk->TotalCompressedBytes) / ((double) bulk->TotalUncompressedBytes);
 
-			printf("Type: %d Flags: 0x%04X Compression Ratio: %f Total: %f %d / %d\n",
+			printf("DeCompress: Type: %d Flags: 0x%04X Compression Ratio: %f Total: %f %d / %d\n",
 					type, flags, CompressionRatio, TotalCompressionRatio, CompressedBytes, UncompressedBytes);
 		}
 #endif
@@ -141,7 +141,7 @@ int bulk_compress(rdpBulk* bulk, BYTE* pSrcData, UINT32 SrcSize, BYTE** ppDstDat
 			CompressionRatio = ((double) CompressedBytes) / ((double) UncompressedBytes);
 			TotalCompressionRatio = ((double) bulk->TotalCompressedBytes) / ((double) bulk->TotalUncompressedBytes);
 
-			printf("Type: %d Flags: 0x%04X Compression Ratio: %f Total: %f %d / %d\n",
+			printf("compress Type: %d Flags: 0x%04X Compression Ratio: %f Total: %f %d / %d\n",
 					type, *pFlags, CompressionRatio, TotalCompressionRatio, CompressedBytes, UncompressedBytes);
 		}
 #endif
