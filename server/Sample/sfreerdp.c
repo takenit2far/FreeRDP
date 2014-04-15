@@ -367,6 +367,7 @@ void tf_peer_dump_rfx(freerdp_peer* client)
 	rdpUpdate* update;
 	rdpPcap* pcap_rfx;
 	pcap_record record;
+	int frameNr = 0;
 
 	s = Stream_New(NULL, 512);
 	update = client->update;
@@ -382,6 +383,7 @@ void tf_peer_dump_rfx(freerdp_peer* client)
 	{
 		pcap_get_next_record_header(pcap_rfx, &record);
 
+
 		Stream_Buffer(s) = realloc(Stream_Buffer(s), record.length);
 		record.data = Stream_Buffer(s);
 		Stream_Capacity(s) = record.length;
@@ -392,7 +394,17 @@ void tf_peer_dump_rfx(freerdp_peer* client)
 		if (test_dump_rfx_realtime && test_sleep_tsdiff(&prev_seconds, &prev_useconds, record.header.ts_sec, record.header.ts_usec) == FALSE)
 			break;
 
+		if (frameNr < 526)
+		{
+			frameNr++;
+			continue;
+		}
+			getchar();
+
 		update->SurfaceCommand(update->context, s);
+		fprintf(stderr, "sent frame %d\n", frameNr++);
+		if (client->CheckFileDescriptor(client) != TRUE)
+			break;
 	}
 }
 
@@ -527,6 +539,8 @@ BOOL tf_peer_activate(freerdp_peer* client)
 
 	rfx_context_reset(context->rfx_context);
 	context->activated = TRUE;
+
+	client->settings->CompressionLevel = PACKET_COMPR_TYPE_64K;
 
 	if (test_pcap_file != NULL)
 	{
