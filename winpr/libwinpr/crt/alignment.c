@@ -27,16 +27,21 @@
 
 #ifndef _WIN32
 
+#define WINPR_ALIGNED_MALLOC_SIGNATURE		0x0BA0BAB
+
 #include <stdlib.h>
 
 #ifdef __APPLE__
 #include <malloc/malloc.h>
+#elif __FreeBSD__
+#include <stdlib.h>
 #else
 #include <malloc.h>
 #endif
 
 struct _aligned_meminfo
 {
+	UINT32 sig;
 	size_t size;
 	void* base_addr;
 };
@@ -82,6 +87,7 @@ void* _aligned_offset_malloc(size_t size, size_t alignment, size_t offset)
 	memptr = (void *)((((size_t)((PBYTE)tmpptr + alignment + offset + sizeof(struct _aligned_meminfo)) & ~(alignment - 1)) - offset));
 
 	ameminfo = (struct _aligned_meminfo*) (((size_t)((PBYTE)memptr - sizeof(struct _aligned_meminfo))));
+	ameminfo->sig = WINPR_ALIGNED_MALLOC_SIGNATURE;
 	ameminfo->base_addr = tmpptr;
 	ameminfo->size = size;
 
@@ -109,6 +115,13 @@ void* _aligned_offset_realloc(void* memblock, size_t size, size_t alignment, siz
 		return NULL;
 
 	ameminfo = (struct _aligned_meminfo*) (((size_t)((PBYTE)memblock - sizeof(struct _aligned_meminfo))));
+
+	if (ameminfo->sig != WINPR_ALIGNED_MALLOC_SIGNATURE)
+	{
+		fprintf(stderr, "_aligned_offset_realloc: memory block was not allocated by _aligned_malloc!\n");
+		return NULL;
+	}
+
 	CopyMemory(newmem, memblock, ameminfo->size);
 	_aligned_free(memblock);
 
@@ -133,6 +146,12 @@ void _aligned_free(void* memblock)
 		return;
 
 	ameminfo = (struct _aligned_meminfo*) (((size_t)((PBYTE)memblock - sizeof(struct _aligned_meminfo))));
+
+	if (ameminfo->sig != WINPR_ALIGNED_MALLOC_SIGNATURE)
+	{
+		fprintf(stderr, "_aligned_free: memory block was not allocated by _aligned_malloc!\n");
+		return;
+	}
 
 	free(ameminfo->base_addr);
 }

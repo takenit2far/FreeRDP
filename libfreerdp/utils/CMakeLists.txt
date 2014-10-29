@@ -25,6 +25,7 @@ set(${MODULE_PREFIX}_SRCS
 	pcap.c
 	profiler.c
 	rail.c
+	ringbuffer.c
 	signal.c
 	stopwatch.c
 	svc_plugin.c
@@ -58,7 +59,7 @@ endif()
 set_complex_link_libraries(VARIABLE ${MODULE_PREFIX}_LIBS
 	MONOLITHIC ${MONOLITHIC_BUILD}
 	MODULE winpr
-	MODULES winpr-crt winpr-synch winpr-thread winpr-utils winpr-path)
+	MODULES winpr-crt winpr-synch winpr-thread winpr-utils winpr-path winpr-winsock)
 
 if(MONOLITHIC_BUILD)
 	set(FREERDP_LIBS ${FREERDP_LIBS} ${${MODULE_PREFIX}_LIBS} PARENT_SCOPE)
@@ -68,3 +69,9 @@ else()
 endif()
 
 set_property(TARGET ${MODULE_NAME} PROPERTY FOLDER "FreeRDP/libfreerdp")
+
+
+if(BUILD_TESTING)
+	add_subdirectory(test)
+endif()
+

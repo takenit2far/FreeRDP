@@ -358,7 +358,7 @@ static void WTSProcessChannelData(rdpPeerChannel* channel, UINT16 channelId, BYT
 
 static int WTSReceiveChannelData(freerdp_peer* client, UINT16 channelId, BYTE* data, int size, int flags, int totalSize)
 {
-	int i;
+	UINT32 i;
 	BOOL status = FALSE;
 	rdpPeerChannel* channel;
 	rdpMcs* mcs = client->context->rdp->mcs;
@@ -427,9 +427,11 @@ BOOL WTSVirtualChannelManagerCheckFileDescriptor(HANDLE hServer)
 
 		if (channel)
 		{
+			ULONG written;
+
 			vcm->drdynvc_channel = channel;
 			dynvc_caps = 0x00010050; /* DYNVC_CAPS_VERSION1 (4 bytes) */
-			WTSVirtualChannelWrite(channel, (PCHAR) &dynvc_caps, sizeof(dynvc_caps), NULL);
+			WTSVirtualChannelWrite(channel, (PCHAR) &dynvc_caps, sizeof(dynvc_caps), &written);
 		}
 	}
 
@@ -846,8 +848,8 @@ BOOL WINAPI FreeRDP_WTSWaitSystemEvent(HANDLE hServer, DWORD EventMask, DWORD* p
 
 HANDLE WINAPI FreeRDP_WTSVirtualChannelOpen(HANDLE hServer, DWORD SessionId, LPSTR pVirtualName)
 {
-	int index;
 	int length;
+	UINT32 index;
 	rdpMcs* mcs;
 	BOOL joined = FALSE;
 	freerdp_peer* client;
@@ -910,12 +912,13 @@ HANDLE WINAPI FreeRDP_WTSVirtualChannelOpen(HANDLE hServer, DWORD SessionId, LPS
 
 HANDLE WINAPI FreeRDP_WTSVirtualChannelOpenEx(DWORD SessionId, LPSTR pVirtualName, DWORD flags)
 {
-	int index;
+	UINT32 index;
 	wStream* s;
 	rdpMcs* mcs;
 	BOOL joined = FALSE;
 	freerdp_peer* client;
 	rdpPeerChannel* channel;
+	ULONG written;
 	WTSVirtualChannelManager* vcm;
 
 	if (SessionId == WTS_CURRENT_SESSION)
@@ -968,7 +971,7 @@ HANDLE WINAPI FreeRDP_WTSVirtualChannelOpenEx(DWORD SessionId, LPSTR pVirtualNam
 
 	s = Stream_New(NULL, 64);
 	wts_write_drdynvc_create_request(s, channel->channelId, pVirtualName);
-	WTSVirtualChannelWrite(vcm->drdynvc_channel, (PCHAR) Stream_Buffer(s), Stream_GetPosition(s), NULL);
+	WTSVirtualChannelWrite(vcm->drdynvc_channel, (PCHAR) Stream_Buffer(s), Stream_GetPosition(s), &written);
 	Stream_Free(s, TRUE);
 
 	return channel;
@@ -997,9 +1000,11 @@ BOOL WINAPI FreeRDP_WTSVirtualChannelClose(HANDLE hChannelHandle)
 
 			if (channel->dvc_open_state == DVC_OPEN_STATE_SUCCEEDED)
 			{
+				ULONG written;
+
 				s = Stream_New(NULL, 8);
 				wts_write_drdynvc_header(s, CLOSE_REQUEST_PDU, channel->channelId);
-				WTSVirtualChannelWrite(vcm->drdynvc_channel, (PCHAR) Stream_Buffer(s), Stream_GetPosition(s), NULL);
+				WTSVirtualChannelWrite(vcm->drdynvc_channel, (PCHAR) Stream_Buffer(s), Stream_GetPosition(s), &written);
 				Stream_Free(s, TRUE);
 			}
 		}

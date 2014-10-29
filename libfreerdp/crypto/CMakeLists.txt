@@ -26,6 +26,7 @@ set(${MODULE_PREFIX}_SRCS
 	base64.c
 	certificate.c
 	crypto.c
+	ssl_trace.c
 	tls.c)
 
 add_complex_library(MODULE ${MODULE_NAME} TYPE "OBJECT"
@@ -71,3 +72,7 @@ else()
 endif()
 
 set_property(TARGET ${MODULE_NAME} PROPERTY FOLDER "FreeRDP/libfreerdp")
+
+if(BUILD_TESTING)
+	add_subdirectory(test)
+endif()
